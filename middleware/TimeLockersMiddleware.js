@@ -1,5 +1,6 @@
 /* global mdb */
 
+const log = require("../utils/log");
 module.exports = function (endpointName) {
     return async function (req, res, next) {
         if (req.method === 'OPTION') {
@@ -10,10 +11,10 @@ module.exports = function (endpointName) {
                 endpoint: endpointName
             })
             if (endpoint) {
-                console.log('Timelocker detected. Cancel request')
+                log('Timelocker detected. Cancel request')
                 return res.status(405).json({message: 'Timelocker detected.'})
             }
-            console.log(`Timelocker not found. Accept the request`)
+            log(`Timelocker not found. Accept the request`)
             next()
         } catch (e) {
             res.status(404).json({message: 'Bad Request'})

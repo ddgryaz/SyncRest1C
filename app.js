@@ -9,6 +9,7 @@ const swaggerUi = require('swagger-ui-express'),
     swaggerDocument = require('./swagger.json')
 const path = require("path");
 const fileUpload = require('express-fileupload')
+const log = require("./utils/log");
 
 const PORT = settings.port || 5267
 const HOST = settings.host || '127.0.0.1'
@@ -25,9 +26,9 @@ const start = async () => {
     try {
         global.mdb = await dbConnector.connect()
         global.mdbClient = dbConnector.client
-        app.listen(PORT, HOST, () => console.log(`APP STARTED ON ${HOST}:${PORT}`))
+        app.listen(PORT, HOST, () => log(`APP STARTED ON ${HOST}:${PORT}`))
     } catch (e) {
-        console.log('ERROR START APP ' + e)
+        log('ERROR START APP ' + e)
     }
 }
 
