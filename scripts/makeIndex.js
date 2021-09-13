@@ -1,9 +1,12 @@
+require('dotenv').config()
 const MinimalMongodb = require('MinimalMongodb')
 const settings = require("../settings");
+const log = require("../utils/log");
 
-const timeLock = (60 * 2)//(60 * 60 * 2) // 2h
+const timeLock = process.env.TIMELOCK || (60 * 2)//(60 * 60 * 2) // 2h
 
 async function start () {
+    log(`Timelock is set to ${timeLock} seconds`)
     const dbConnector = new MinimalMongodb(settings.dbSettings)
     const mdb = await dbConnector.connect()
     await mdb.collection('allowIps').createIndex({ 'ip': 1 })
@@ -13,9 +16,9 @@ async function start () {
 
 
 start().then(() => {
-    console.log('FINISH! Indexes created!')
+    log('FINISH! Indexes created!')
     process.exit(0)
 }).catch((err) => {
-    console.log('ERROR', err.toString())
+    log('ERROR', err.toString())
     process.exit(1)
 })

@@ -7,10 +7,10 @@ const log = require('../utils/log')
 class UsersController {
     async postUsersFrom1C(req, res, next) {
         try {
-            // await mdb.collection('timeLockers').insertOne({
-            //     createdAt: new Date(),
-            //     endpoint: 'users'
-            // })
+            await mdb.collection('timeLockers').insertOne({
+                createdAt: new Date(),
+                endpoint: 'users'
+            })
             const {json} = req.files
             let fileName = moment(new Date()).format('YYMMDDhmm')
             await json.mv(path.resolve(__dirname, '..', 'static', 'U' + fileName+ '.json'))
