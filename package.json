@@ -1,0 +1,27 @@
+{
+  "name": "syncrest1c",
+  "version": "1.0.0",
+  "description": "Сервис для получения данных из 1С.",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "idx": "node scripts/makeIndex.js",
+    "prune": "npm prune --production"
+  },
+  "author": "Dmitriy Dzyuman, ATMRussia",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.12"
+  },
+  "dependencies": {
+    "MinimalMongodb": "git+https://git.ans.aero/Libs/MinimalMongodb.git",
+    "PrepareWords": "git+https://git.ans.aero/Libs/PrepareWords.git",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "express-fileupload": "^1.2.1",
+    "moment": "^2.29.1",
+    "swagger-ui-express": "^4.1.6"
+  }
+}

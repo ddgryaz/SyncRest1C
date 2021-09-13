@@ -1,0 +1,30 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "SyncRest1C",
+    "description": "Сервис для получения данных из 1С."
+  },
+  "host": "127.0.0.1:5267",
+  "basePath": "/",
+  "schemes": ["http"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "paths": {
+    "/api/users/postUser": {
+      "post": {
+        "tags": ["Post USERS collection"],
+        "description": "Данные о людях",
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "New user is created",
+            "schema": {
+              "$ref": ""
+            }
+          }
+        }
+      }
+    }
+  }
+}
