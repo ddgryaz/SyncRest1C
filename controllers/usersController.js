@@ -4,6 +4,7 @@ const moment = require("moment");
 const path = require("path");
 const log = require('../utils/log')
 const usersJSONService = require('../service/usersJSONService')
+const settings = require("../settings");
 
 class UsersController {
     async postUsersFrom1C(req, res, next) {
@@ -18,17 +19,17 @@ class UsersController {
             // })
             const {json} = req.files
             let fileName = moment(new Date()).format('YYMMDDhmm')
-            await json.mv(path.resolve(__dirname, '..', 'JSON', 'users', 'U' + fileName+ '.json'))
+            await json.mv(path.resolve(__dirname, '..', 'JSON', 'users', settings.prefixUsers + fileName+ '.json'))
             log('JSON upload successfully. Transfer to the service')
             /*
-                ! Вызываем и передаем аргументы в асинхронный сервис, не указывая await.
-                ! Сервис продолжает работать, в то время как 1С уже получит response.
+                ! Вызовем сервис. Ждать не будем, вернем респонс
              */
             usersJSONService(fileName).then(() => {
                 log('Users Service worked successfully')
             }, (reason => log(`USERS SERVICE ERROR: ${reason}`)))
             return res.json(`Upload is success`)
         } catch (e) {
+            log(`UsersController ERROR: ${e}`)
             next(ApiError.badRequest(e.message))
         }
     }

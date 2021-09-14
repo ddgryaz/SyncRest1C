@@ -16,5 +16,8 @@ exports = module.exports = {
 
     },
     port: process.env.PORT,
-    host: process.env.HOST
+    host: process.env.HOST,
+    prefixUsers: 'U',
+    prefixReplacements: 'R',
+    prefixSubdivisions: 'S'
 }

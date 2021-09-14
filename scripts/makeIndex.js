@@ -5,6 +5,10 @@ const log = require("../utils/log");
 
 const timeLock = process.env.TIMELOCK || (60 * 2)//(60 * 60 * 2) // 2h
 
+/*
+TODO: Коллекции meta 3 штуки надо индексить
+ */
+
 async function start () {
     log(`Timelock is set to ${timeLock} seconds`)
     const dbConnector = new MinimalMongodb(settings.dbSettings)
