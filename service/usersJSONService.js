@@ -1,4 +1,4 @@
-const workDirectory = '../static/users/'
+const workDirectory = '../JSON/users/'
 
 
 module.exports = async function(fileName) {

@@ -18,7 +18,7 @@ class UsersController {
             // })
             const {json} = req.files
             let fileName = moment(new Date()).format('YYMMDDhmm')
-            await json.mv(path.resolve(__dirname, '..', 'static', 'users', 'U' + fileName+ '.json'))
+            await json.mv(path.resolve(__dirname, '..', 'JSON', 'users', 'U' + fileName+ '.json'))
             log('JSON upload successfully. Transfer to the service')
             /*
                 ! Вызываем и передаем аргументы в асинхронный сервис, не указывая await.
