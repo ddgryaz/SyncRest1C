@@ -8,6 +8,8 @@ const workDirectory = '../JSON/users/'
 module.exports = async function (fileName) {
     try {
         const file = require(`${workDirectory}` + settings.prefixUsers + `${fileName}` + '.json')
+        let wasChanges = false
+        let newUsers = false
         for (let i = 0; file[i]; i++) {
             const user = file[i]
             const username = file[i].employee
@@ -21,7 +23,8 @@ module.exports = async function (fileName) {
                     await mdb.collection('metaUsers').updateOne({employee: username}, {
                         $set: user
                     })
-                    log(`${username} Modified`)
+                    log(`${username} Modified!`)
+                    wasChanges = true
                 }
             } else {
                 user.hash = hash(user)
@@ -31,7 +34,18 @@ module.exports = async function (fileName) {
                     upsert: true
                 })
                 log(`${username} added!`)
+                newUsers = true
             }
+        }
+        if (!wasChanges && !newUsers) {
+            log(`No changes. Nothing to update`)
+        }
+        if (wasChanges || newUsers) {
+            /*
+            TODO:
+             Вероятно, стоит собирать новые и измененные юзернэймы в цикле выше
+             чтобы дальше изменять только их
+             */
         }
     } catch (e) {
         log(`UsersService ERROR: ${e}`)

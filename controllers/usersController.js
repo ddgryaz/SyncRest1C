@@ -18,9 +18,9 @@ class UsersController {
             //     endpoint: 'users'
             // })
             const {json} = req.files
-            let fileName = moment(new Date()).format('YYMMDDhmmss')
+            let fileName = moment(new Date()).format('YYMMDDhhmmss')
             await json.mv(path.resolve(__dirname, '..', 'JSON', 'users', settings.prefixUsers + fileName+ '.json'))
-            log('JSON upload successfully. Transfer to the service')
+            log('JSON with USERS upload successfully. Transfer to the service')
             /*
                 ! Вызовем сервис. Ждать не будем, вернем респонс
              */
