@@ -6,3 +6,4 @@ mock.json
 /JSON/users/*.json
 /JSON/replacements/*.json
 /JSON/subdivisions/*.json
+/scripts/forTests.js

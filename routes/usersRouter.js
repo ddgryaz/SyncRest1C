@@ -5,6 +5,6 @@ const IPAllowedMiddleware = require('../middleware/IPAllowedMiddleware')
 const TimeLockersMiddleware = require('../middleware/TimeLockersMiddleware')
 
 
-router.post('/postUsers', IPAllowedMiddleware,/* TimeLockersMiddleware('users'),*/ usersController.postUsersFrom1C)
+router.post('/postUsers', IPAllowedMiddleware, TimeLockersMiddleware('users'), usersController.postUsersFrom1C)
 
 module.exports = router
