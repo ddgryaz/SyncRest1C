@@ -14,29 +14,30 @@ module.exports = async function (fileName) {
         for (let i = 0; file[i]; i++) {
             const user = file[i]
             const username = file[i].employee
+            const guid = file[i].guid
             const metaUser = await mdb.collection('metaUsers').findOne({
-                employee: username
+                guid: guid
             })
             if (metaUser) {
                 const compareCandidate = (hash(user) === metaUser.hash)
                 if (!compareCandidate) {
                     user.hash = hash(user)
-                    await mdb.collection('metaUsers').updateOne({employee: username}, {
+                    await mdb.collection('metaUsers').updateOne({guid: guid}, {
                         $set: user
                     })
                     log(`${username} Modified!`)
-                    usersForMongo.push(username)
+                    usersForMongo.push(guid)
                     wasChanges = true
                 }
             } else {
                 user.hash = hash(user)
-                await mdb.collection('metaUsers').updateOne({employee: username}, {
+                await mdb.collection('metaUsers').updateOne({guid: guid}, {
                     $set: user
                 }, {
                     upsert: true
                 })
                 log(`${username} added!`)
-                usersForMongo.push(username)
+                usersForMongo.push(guid)
                 newUsers = true
             }
         }
@@ -47,20 +48,31 @@ module.exports = async function (fileName) {
             log(`Synchronizing ${usersForMongo.length} users with mongo...`)
             for (let i = 0; usersForMongo[i]; i++) {
                 const user = await mdb.collection('metaUsers').findOne({
-                    employee: usersForMongo[i]
+                    guid: usersForMongo[i]
                 })
                 /*
                     ! Здесь НЕ создаём следующие объекты и массивы:
-                    !   rights {}
-                    !   editBound []
-                    !   viewBound []
-                 */
-                /*
-                  TODO:
-                    Разобраться с _IDRRef
+                    ! rights {}
+                    ! editBound []
+                    ! viewBound []
+
+                    ? В моках нет даты рождения, а вообще будет, поэтому =>
+                    ? birthday: user.(? birthday ?)
+
+                    * Такая история: в старом импорте существует поле _IDRRef,
+                    * и с учетом этого поля уже выстроен сервис авторизации,
+                    * поэтому создадим это поле, пихнём туда GUID.
+                    * Немного справки(но это не точно): _IDRRef - бинарник,
+                    * который создаётся в 1С - является уникальным id для любых объектов.
+
+                    TODO:
+                     Собирать - hierarchy.
+                     Мэйби, чтобы данные не становились пустышками юзать ...prev ?
+                     Даты === даты, а не строки!!!
                  */
                 const newInfo = {
                     _id: user._id,
+                    _IDRRef: user.guid,
                     disableDate: user.fired_date,
                     displayName: user.lastName + ' ' + user.firstName + ' ' + user.secondName,
                     dolgnost: user.position,
@@ -79,7 +91,9 @@ module.exports = async function (fileName) {
                     dolgnostLast: null,
                     status: user.status,
                     tabNumber: user.tabNumber,
-                    employmentDate: user.employmentDate
+                    employmentDate: user.employmentDate,
+                    statusStartDate: user.stateStartDate,
+                    stateEndDate: user.stateExpirationDate
                 }
                 if (user.email) {
                     newInfo.mailConst.push(user.email)
