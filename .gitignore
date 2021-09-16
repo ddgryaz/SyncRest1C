@@ -3,6 +3,7 @@ node_modules
 package-lock.json
 .env
 mock.json
+mockFull.json
 mockObj.json
 /JSON/users/*.json
 /JSON/replacements/*.json

@@ -64,11 +64,14 @@ module.exports = async function (fileName) {
                     * поэтому создадим это поле, пихнём туда GUID.
                     * Немного справки(но это не точно): _IDRRef - бинарник,
                     * который создаётся в 1С - является уникальным id для любых объектов.
-
-                    TODO:
+                 */
+                 /* TODO:
                      Собирать - hierarchy.
                      Мэйби, чтобы данные не становились пустышками юзать ...prev ?
                      Даты === даты, а не строки!!!
+                     stateStartDate пустые строки сделать null
+                     stateExpirationDate пустые строки сделать null
+                     words and tags - собирать слова
                  */
                 const newInfo = {
                     _id: user._id,
