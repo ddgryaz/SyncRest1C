@@ -5,7 +5,5 @@ package-lock.json
 mock.json
 mockFull.json
 mockObj.json
-/JSON/users/*.json
-/JSON/replacements/*.json
-/JSON/subdivisions/*.json
+/JSON/data/*.json
 /scripts/forTests.js

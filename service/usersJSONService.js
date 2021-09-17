@@ -4,7 +4,7 @@ const log = require("../utils/log");
 const hash = require('object-hash');
 const PrepareWords = require("PrepareWords");
 
-const workDirectory = '../JSON/users/'
+const workDirectory = '../JSON/data/'
 
 module.exports = async function (fileName) {
     try {
@@ -121,7 +121,7 @@ module.exports = async function (fileName) {
                     newInfo.tags.push(structEl.caption)
                 })
 
-                const userInMongo = await mdbClient.db('Auth').collection('users').updateOne({
+                const userInMongo = await mdbClient.db('Auth').collection('data').updateOne({
                     _id: user._id
                 }, {
                     $set: newInfo

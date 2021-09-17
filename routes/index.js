@@ -1,10 +1,7 @@
 const Router = require('express')
 const router = new Router()
-const usersRouter = require('./usersRouter')
-const subdivisionsRouter = require('./subdivisionsRouter')
+const dataFrom1CRouter = require('./dataFrom1CRouter')
 
-
-router.use('/users', usersRouter)
-router.use('/subdivisions', subdivisionsRouter)
+router.use('/data', dataFrom1CRouter)
 
 module.exports = router

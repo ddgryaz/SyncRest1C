@@ -6,8 +6,8 @@ const log = require('../utils/log')
 const usersJSONService = require('../service/usersJSONService')
 const settings = require("../settings");
 
-class UsersController {
-    async postUsersFrom1C(req, res, next) {
+class DataController {
+    async syncDataFrom1CWithMongo(req, res, next) {
         try {
             /*
                 * Установим таймлокер, чтобы
@@ -15,11 +15,11 @@ class UsersController {
              */
             // await mdb.collection('timeLockers').insertOne({
             //     createdAt: new Date(),
-            //     endpoint: 'users'
+            //     endpoint: 'dataFrom1C'
             // })
-            const {json} = req.files
+            const {users} = req.files
             let fileName = moment(new Date()).format('YYMMDDhhmmss')
-            await json.mv(path.resolve(__dirname, '..', 'JSON', 'users', settings.prefixUsers + fileName+ '.json'))
+            await users.mv(path.resolve(__dirname, '..', 'JSON', 'data', settings.prefixUsers + fileName+ '.json'))
             log('JSON with USERS upload successfully. Transfer to the service')
             /*
                 ! Вызовем сервис. Ждать не будем, вернем респонс
@@ -35,4 +35,4 @@ class UsersController {
     }
 }
 
-module.exports = new UsersController()
+module.exports = new DataController()
