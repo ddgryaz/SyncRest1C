@@ -7,6 +7,9 @@ module.exports = async function (req, res, next){
     }
     try {
         const data = req.files
+        /*
+        ! Проверку на длину, больше 3 не прокатит и тд
+         */
         if (data.users && data.subdivisions && data.replacements) {
             log('Data valid success')
             next()
