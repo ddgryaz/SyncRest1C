@@ -77,20 +77,20 @@ module.exports = async function (fileName) {
                     displayName: user.lastName + ' ' + user.firstName + ' ' + user.secondName,
                     dolgnost: user.position,
                     fam: user.lastName,
-                    hierarchy: [],
+                    hierarchy: user.hierarchy,
                     ids: [user._id],
                     im: user.firstName,
                     mailConst: [],
                     ot: user.secondName,
                     tags: [],
-                    //birthday: user.birthday,
+                    birthday: user.birthdate,
                     telephoneNumberAnother: [],
                     telephoneNumberMobile: [],
                     words: [],
                     mail: [],
                     telephoneNumber: [],
                     dolgnostLast: null,
-                    status: user.status,
+                    status: user.state,
                     tabNumber: user.tabNumber,
                     employmentDate: user.employmentDate,
                     statusStartDate: user.stateStartDate,
@@ -113,13 +113,13 @@ module.exports = async function (fileName) {
                     .fromString(newInfo.dolgnost)
                     .fromString(newInfo.status)
                     .fromString(newInfo.tabNumber)
-                //.fromDate(newInfo.birthday)
+                    .fromDate(newInfo.birthday)
 
                 // tags[] - состоит из caption в иерархии, заполним массив и докинем в words[]:
-                // newInfo.hierarchy.forEach((structEl) => {
-                //     pWords.fromString(structEl.caption)
-                //     newInfo.tags.push(structEl.caption)
-                // })
+                newInfo.hierarchy.forEach((structEl) => {
+                    pWords.fromString(structEl.caption)
+                    newInfo.tags.push(structEl.caption)
+                })
 
                 const userInMongo = await mdbClient.db('Auth').collection('users').updateOne({
                     _id: user._id
