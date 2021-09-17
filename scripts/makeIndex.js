@@ -3,7 +3,7 @@ const MinimalMongodb = require('MinimalMongodb')
 const settings = require("../settings");
 const log = require("../utils/log");
 
-const timeLock = process.env.TIMELOCK || (60 * 2)//(60 * 60 * 2) // 2h
+const timeLock = settings.timeLock || (60 * 2)//(60 * 60 * 2) // 2h
 
 /*
 TODO: Коллекции meta 3 штуки надо индексить

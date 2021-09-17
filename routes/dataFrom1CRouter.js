@@ -7,7 +7,7 @@ const validateReq = require('../middleware/validateReq')
 
 router.post('/postData',
     IPAllowedMiddleware,
-    validateReq,
+    // validateReq,
     TimeLockersMiddleware('dataFrom1C'),
     dataController.syncDataFrom1CWithMongo)
 

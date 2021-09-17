@@ -3,7 +3,7 @@ const ApiError = require('../error/ApiErorr')
 const moment = require("moment");
 const path = require("path");
 const log = require('../utils/log')
-const usersJSONService = require('../service/usersJSONService')
+const syncDataService = require('../service/syncDataService')
 const settings = require("../settings");
 
 class DataController {
@@ -18,18 +18,22 @@ class DataController {
             //     endpoint: 'dataFrom1C'
             // })
             const {users} = req.files
+            const {subdivisions} = req.files
+            const {replacements} = req.files
             let fileName = moment(new Date()).format('YYMMDDhhmmss')
             await users.mv(path.resolve(__dirname, '..', 'JSON', 'data', settings.prefixUsers + fileName+ '.json'))
-            log('JSON with USERS upload successfully. Transfer to the service')
+            await subdivisions.mv(path.resolve(__dirname, '..', 'JSON', 'data', settings.prefixSubdivisions + fileName+ '.json'))
+            await replacements.mv(path.resolve(__dirname, '..', 'JSON', 'data', settings.prefixReplacements + fileName+ '.json'))
+            log('JSONs data loaded successfully. Transfer to the service')
             /*
                 ! Вызовем сервис. Ждать не будем, вернем респонс
              */
-            usersJSONService(fileName).then(() => {
-                log('Users Service worked successfully')
-            }, (reason => log(`USERS SERVICE ERROR: ${reason}`)))
+            syncDataService(fileName).then(() => {
+                log('syncDataService worked successfully')
+            }, (reason => log(`SYNCDATASERVICE ERROR: ${reason}`)))
             return res.json(`Upload is success`)
         } catch (e) {
-            log(`UsersController ERROR: ${e}`)
+            log(`syncDataFrom1CWithMongo ERROR: ${e}`)
             next(ApiError.badRequest(e.message))
         }
     }

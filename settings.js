@@ -17,6 +17,7 @@ exports = module.exports = {
     },
     port: process.env.PORT,
     host: process.env.HOST,
+    timeLock: process.env.TIMELOCK,
     prefixUsers: 'U',
     prefixReplacements: 'R',
     prefixSubdivisions: 'S'
