@@ -17,6 +17,6 @@ module.exports = async function (req, res, next){
         log(`Found post request. Candidate confirmed, IP: ${ip}`)
         next()
     } catch (e) {
-        res.status(404).json({message: 'Bad Request'})
+        res.status(400).json({message: 'Bad Request'})
     }
 }

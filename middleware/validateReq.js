@@ -8,13 +8,13 @@ module.exports = async function (req, res, next){
     try {
         const data = req.files
         if (data.users && data.subdivisions && data.replacements) {
-            log('Data valid success ')
+            log('Data valid success')
             next()
         } else {
             log('Data not validated. Cancel request')
-            res.status(404).json({message: 'Expected 3 files: users, subdivisions, replacements.'})
+            res.status(415).json({message: 'Expected 3 files: users, subdivisions, replacements.'})
         }
     } catch (e) {
-        res.status(404).json({message: 'Bad Request'})
+        res.status(400).json({message: 'Bad Request'})
     }
 }

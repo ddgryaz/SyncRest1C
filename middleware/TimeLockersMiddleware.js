@@ -17,7 +17,7 @@ module.exports = function (endpointName) {
             log(`Timelocker not found. Accept the request`)
             next()
         } catch (e) {
-            res.status(404).json({message: 'Bad Request'})
+            res.status(400).json({message: 'Bad Request'})
         }
     }
 }
