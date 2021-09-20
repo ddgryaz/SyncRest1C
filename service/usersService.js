@@ -4,7 +4,7 @@ const log = require("../utils/log");
 const hash = require('object-hash');
 const PrepareWords = require("PrepareWords");
 
-const workDirectory = '../JSON/data/'
+const workDirectory = settings.workDirectory
 
 module.exports = async function (fileName) {
     try {
@@ -70,6 +70,11 @@ module.exports = async function (fileName) {
                        stateStartDate пустые строки сделать null
                        stateExpirationDate пустые строки сделать null
                 */
+                for (let i = 0; user.hierarchy[i]; i++){
+                    user.hierarchy[i]._id = user.hierarchy[i].id
+                    delete user.hierarchy[i].id
+                }
+
                 const newInfo = {
                     _id: user._id,
                     _IDRRef: user.guid,
@@ -121,7 +126,16 @@ module.exports = async function (fileName) {
                     newInfo.tags.push(structEl.caption)
                 })
 
-                const userInMongo = await mdbClient.db('Auth').collection('data').updateOne({
+                const ar = newInfo.hierarchy.concat([])
+                newInfo.editBound = []
+                newInfo.viewBound = []
+                while(ar.length){
+                    const structItem = ar.pop()
+                    newInfo.editBound.length<2 && newInfo.editBound.push(structItem.id)
+                    newInfo.viewBound.push(structItem.id)
+                }
+
+                const userInMongo = await mdbClient.db('Auth').collection('users').updateOne({
                     _id: user._id
                 }, {
                     $set: newInfo
