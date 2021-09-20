@@ -4,12 +4,10 @@ const replacementsService = require('./replacementsService')
 
 module.exports = async function (fileName) {
     /*
-    * Апдейтим в таком порядке:
-    * Подразделения
-    * Юзеры
-    * Замещения
+    ! Важно апдейтить сначала юзеров, ибо в подразделениях мы будем считать
+    ! активных людей
      */
-    // await subdivisionsService(fileName)
     await userService(fileName)
+    // await subdivisionsService(fileName)
     // await replacementsService(fileName)
 }

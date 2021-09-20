@@ -58,9 +58,8 @@ module.exports = async function (fileName) {
                 cleanObj(user.hierarchy)
 
                 // У человека может быть работа по совместительству, поправим и ее
-                if (user.partTimeHierarchy) {
-                    cleanObj(user.partTimeHierarchy)
-                }
+                user.partTimeHierarchy && cleanObj(user.partTimeHierarchy)
+
 
                 /*
                     ! Здесь НЕ создаём следующие объекты и массивы:
