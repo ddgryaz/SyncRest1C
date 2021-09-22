@@ -16,14 +16,14 @@ module.exports = async function (fileName) {
             const sub = file[i]
             const guid = file[i].subunitGuid
             const subName = file[i].prettyName
-            const metaSubunit = await mdb.collection('metaSubunit').findOne({
+            const metaSubunit = await mdb.collection('metaSubdivisions').findOne({
                 subunitGuid: guid
             })
             if (metaSubunit) {
                 const compareSub = (hash(sub) === metaSubunit.hash)
                 if (!compareSub) {
                     sub.hash = hash(sub)
-                    await mdb.collection('metaSubunit').updateOne({subunitGuid: guid}, {
+                    await mdb.collection('metaSubdivisions').updateOne({subunitGuid: guid}, {
                         $set: sub
                     })
                     log(`${subName} Modified!`)
@@ -31,7 +31,7 @@ module.exports = async function (fileName) {
                 }
             } else {
                 sub.hash = hash(sub)
-                await mdb.collection('metaSubunit').updateOne({subunitGuid: guid}, {
+                await mdb.collection('metaSubdivisions').updateOne({subunitGuid: guid}, {
                     $set: sub
                 }, {
                     upsert: true
@@ -43,7 +43,24 @@ module.exports = async function (fileName) {
         if (modifiedSubs.length === 0) {
             log(`No changes. Nothing to update`)
         } else {
-            log(`Synchronizing ${modifiedSubs.length} subunit with Mongo...`)
+            log(`Synchronizing ${modifiedSubs.length} subdivisions with Mongo...`)
+            for (let i = 0; modifiedSubs[i]; i++) {
+                const sub = await mdb.collection('metaSubdivisions').findOne({
+                    subunitGuid: modifiedSubs[i]
+                })
+
+                // const newInfo = {
+                //     _id: sub.subunitGuid,
+                //     activePeople: ,
+                //     caption: sub.prettyName,
+                //     shortName: sub.subunit,
+                //     dismissedPeoples: ,
+                //     isActual: sub.isActual,
+                //     level: ,
+                //     parent: ,
+                //     peoplePosition:
+                // }
+            }
         }
     } catch (e) {
 
