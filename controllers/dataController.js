@@ -28,9 +28,9 @@ class DataController {
             /*
                 ! Вызовем сервис. Ждать не будем, вернем респонс
              */
-            syncDataService(fileName).then(() => {
-                log('syncDataService worked successfully!')
-            }, (reason => log(`SYNCDATASERVICE ERROR: ${reason}`)))
+            // syncDataService(fileName).then(() => {
+            //     log('syncDataService worked successfully!')
+            // }, (reason => log(`SYNCDATASERVICE ERROR: ${reason}`)))
             return res.json(`Upload is success`)
         } catch (e) {
             log(`syncDataFrom1CWithMongo ERROR: ${e}`)

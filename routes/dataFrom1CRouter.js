@@ -3,13 +3,13 @@ const router = new Router
 const dataController = require('../controllers/dataController')
 const IPAllowedMiddleware = require('../middleware/IPAllowedMiddleware')
 const TimeLockersMiddleware = require('../middleware/TimeLockersMiddleware')
-const validateReq = require('../middleware/validateReq')
+const validateReqMiddleware = require('../middleware/validateReqMiddleware')
 
 /**
  * @swagger
  * /api/data/postData:
  *  post:
- *    tags: [Получение данных]
+ *    tags: [Приём данных]
  *    description: Эндпоинт на приём 3ёх файлов выгрузки из 1С.
  *    summary: Uploads a files.
  *    consumes:
@@ -34,7 +34,7 @@ const validateReq = require('../middleware/validateReq')
  *      '200':
  *        description: Upload is success (Запрос прошел успешно)
  *      '415':
- *        description: Expected 3 files (При загрузке файлов, обратите внимание на поля Name в Parameters и на количество файлов)
+ *        description: Expected 3 files (При загрузке файлов, обратите внимание на поля Name в Parameters и на количество файлов. Или файл(ы) не .json)
  *      '400':
  *        description: Bad Request (Сервис не понял ваш запрос)
  *      '403':
@@ -46,9 +46,9 @@ const validateReq = require('../middleware/validateReq')
  *
  */
 router.post('/postData',
-    IPAllowedMiddleware,
-    validateReq,
-    TimeLockersMiddleware('dataFrom1C'),
-    dataController.syncDataFrom1CWithMongo)
-
+    // IPAllowedMiddleware,
+    validateReqMiddleware,
+    // TimeLockersMiddleware('dataFrom1C'),
+    // dataController.syncDataFrom1CWithMongo)
+)
 module.exports = router

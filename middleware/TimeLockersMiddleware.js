@@ -3,9 +3,6 @@
 const log = require("../utils/log");
 module.exports = function (endpointName) {
     return async function (req, res, next) {
-        if (req.method === 'OPTION') {
-            next()
-        }
         try {
             const endpoint = await mdb.collection('timeLockers').findOne({
                 endpoint: endpointName

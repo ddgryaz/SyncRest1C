@@ -2,9 +2,6 @@
 
 const log = require("../utils/log");
 module.exports = async function (req, res, next){
-    if (req.method === 'OPTION'){
-        next()
-    }
     try {
         const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress
         const candidate = await mdb.collection('allowIps').findOne({
