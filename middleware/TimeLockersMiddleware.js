@@ -12,7 +12,7 @@ module.exports = function (endpointName) {
             })
             if (endpoint) {
                 log('Timelocker detected. Cancel request')
-                return res.status(405).json({message: 'Timelocker detected.'})
+                return res.status(405).json({message: 'TimeLocker detected.'})
             }
             log(`Timelocker not found. Accept the request`)
             next()
