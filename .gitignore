@@ -2,8 +2,8 @@
 node_modules
 package-lock.json
 .env
-mock.json
-mockFull.json
-mockObj.json
+mockU.json
+mockR.json
+mockS.json
 /JSON/data/*.json
 /scripts/forTests.js

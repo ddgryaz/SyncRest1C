@@ -49,17 +49,16 @@ module.exports = async function (fileName) {
                     subunitGuid: modifiedSubs[i]
                 })
 
-                // const newInfo = {
-                //     _id: sub.subunitGuid,
-                //     activePeople: ,
-                //     caption: sub.prettyName,
-                //     shortName: sub.subunit,
-                //     dismissedPeoples: ,
-                //     isActual: sub.isActual,
-                //     level: ,
-                //     parent: ,
-                //     peoplePosition:
-                // }
+                const newInfo = {
+                    _id: sub.subunitGuid,
+                    activePeople: ,
+                    caption: sub.prettyName,
+                    shortName: sub.subunit,
+                    dismissedPeoples: ,
+                    level: sub.level,
+                    parent: ,
+                    peoplePosition: sub.peoplePosition ? sub.peoplePosition : delete sub.peoplePosition
+                }
             }
         }
     } catch (e) {

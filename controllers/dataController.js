@@ -21,16 +21,16 @@ class DataController {
             const {subdivisions} = req.files
             const {replacements} = req.files
             let fileName = moment(new Date()).format('YYMMDDhhmmss')
-            await users.mv(path.resolve(__dirname, '..', 'JSON', 'data', settings.prefixUsers + fileName+ '.json'))
+            // await users.mv(path.resolve(__dirname, '..', 'JSON', 'data', settings.prefixUsers + fileName+ '.json'))
             await subdivisions.mv(path.resolve(__dirname, '..', 'JSON', 'data', settings.prefixSubdivisions + fileName+ '.json'))
-            await replacements.mv(path.resolve(__dirname, '..', 'JSON', 'data', settings.prefixReplacements + fileName+ '.json'))
+            // await replacements.mv(path.resolve(__dirname, '..', 'JSON', 'data', settings.prefixReplacements + fileName+ '.json'))
             log('JSONs data loaded successfully. Transfer to the service')
             /*
                 ! Вызовем сервис. Ждать не будем, вернем респонс
              */
-            // syncDataService(fileName).then(() => {
-            //     log('syncDataService worked successfully!')
-            // }, (reason => log(`SYNCDATASERVICE ERROR: ${reason}`)))
+            syncDataService(fileName).then(() => {
+                log('syncDataService worked successfully!')
+            }, (reason => log(`SYNCDATASERVICE ERROR: ${reason}`)))
             return res.json(`Upload is success`)
         } catch (e) {
             log(`syncDataFrom1CWithMongo ERROR: ${e}`)

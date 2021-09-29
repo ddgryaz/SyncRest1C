@@ -7,7 +7,7 @@ module.exports = async function (req, res, next){
         const candidate = await mdb.collection('allowIps').findOne({
             ip: ip
         })
-        if (!candidate && ip !== '127.0.0.1') {
+        if (!candidate) {
             log(`Found post request. Candidate not found. Permission Denied. ${ip}`)
             return res.status(403).json({message: 'Permission Denied'})
         }
