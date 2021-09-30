@@ -1,4 +1,3 @@
-require('dotenv').config()
 const MinimalMongodb = require('MinimalMongodb')
 const settings = require("../settings");
 const log = require("../utils/log");

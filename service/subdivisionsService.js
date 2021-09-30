@@ -2,7 +2,8 @@
 const settings = require("../settings");
 const log = require("../utils/log");
 const hash = require('object-hash');
-const PrepareWords = require("PrepareWords");
+const getActivePeoples = require('../utils/getActivePeoples')
+const getDismissedPeoples = require('../utils/getDismissedPeoples')
 
 
 const workDirectory = settings.workDirectory
@@ -14,30 +15,30 @@ module.exports = async function (fileName) {
         const modifiedSubs = []
         for (let i = 0; file[i]; i++) {
             const sub = file[i]
-            const guid = file[i].subunitGuid
+            const id = file[i].distinctiveIndex
             const subName = file[i].prettyName
             const metaSubunit = await mdb.collection('metaSubdivisions').findOne({
-                subunitGuid: guid
+                distinctiveIndex: id
             })
             if (metaSubunit) {
                 const compareSub = (hash(sub) === metaSubunit.hash)
                 if (!compareSub) {
                     sub.hash = hash(sub)
-                    await mdb.collection('metaSubdivisions').updateOne({subunitGuid: guid}, {
+                    await mdb.collection('metaSubdivisions').updateOne({distinctiveIndex: id}, {
                         $set: sub
                     })
                     log(`${subName} Modified!`)
-                    modifiedSubs.push(guid)
+                    modifiedSubs.push(id)
                 }
             } else {
                 sub.hash = hash(sub)
-                await mdb.collection('metaSubdivisions').updateOne({subunitGuid: guid}, {
+                await mdb.collection('metaSubdivisions').updateOne({distinctiveIndex: id}, {
                     $set: sub
                 }, {
                     upsert: true
                 })
                 log(`${subName} Added!`)
-                modifiedSubs.push(guid)
+                modifiedSubs.push(id)
             }
         }
         if (modifiedSubs.length === 0) {
@@ -46,22 +47,35 @@ module.exports = async function (fileName) {
             log(`Synchronizing ${modifiedSubs.length} subdivisions with Mongo...`)
             for (let i = 0; modifiedSubs[i]; i++) {
                 const sub = await mdb.collection('metaSubdivisions').findOne({
-                    subunitGuid: modifiedSubs[i]
+                    distinctiveIndex: modifiedSubs[i]
                 })
 
                 const newInfo = {
-                    _id: sub.subunitGuid,
-                    activePeople: ,
+                    _id: settings.prefixSubsidiary + sub.distinctiveIndex,
+                    activePeople: await getActivePeoples(settings.prefixSubsidiary + sub.distinctiveIndex),
+                    guid: sub.subunitGuid,
+                    guidParent: sub.parentGuid,
                     caption: sub.prettyName,
                     shortName: sub.subunit,
-                    dismissedPeoples: ,
+                    dismissedPeoples: await getDismissedPeoples(settings.prefixSubsidiary + sub.distinctiveIndex),
                     level: sub.level,
-                    parent: ,
-                    peoplePosition: sub.peoplePosition ? sub.peoplePosition : delete sub.peoplePosition
+                    parent: sub.parentDistinctiveIndex ? settings.prefixSubsidiary + sub.parentDistinctiveIndex : null,
+                    peoplePosition: sub.peoplePosition
                 }
+                if (newInfo.peoplePosition === false) {
+                    delete newInfo.peoplePosition
+                }
+                await mdbClient.db('Auth').collection('structure').updateOne({
+                    _id: newInfo._id
+                }, {
+                    $set: newInfo
+                }, {
+                    upsert: true
+                })
             }
+            log('Subdivisions Service result: successfully!')
         }
     } catch (e) {
-
+        log(`SubdivisionsService ERROR: ${e}`)
     }
 }
