@@ -4,6 +4,7 @@ const log = require("../utils/log");
 const hash = require('object-hash');
 const getActivePeoples = require('../utils/getActivePeoples')
 const getDismissedPeoples = require('../utils/getDismissedPeoples')
+const findStringInObject = require('../utils/findStringInObject')
 
 
 const workDirectory = settings.workDirectory
@@ -13,10 +14,18 @@ module.exports = async function (fileName) {
     try {
         const file = require(`${workDirectory}` + settings.prefixSubdivisions + `${fileName}` + '.json')
         const modifiedSubs = []
+        console.log(file.length)
         for (let i = 0; file[i]; i++) {
             const sub = file[i]
             const id = file[i].distinctiveIndex
             const subName = file[i].prettyName
+            /*
+            * В тюменском филиале, в данных есть дубли. В 1С хранятся не актуальные данные
+            * с пометкой (Не исп.). С помощью рекурсии пробежимся по объекту, проверим наличие такой пометки.
+             */
+            if (await findStringInObject("(Не исп.)", file[i])) {
+                continue
+            }
             const metaSubunit = await mdb.collection('metaSubdivisions').findOne({
                 distinctiveIndex: id
             })
@@ -27,7 +36,7 @@ module.exports = async function (fileName) {
                     await mdb.collection('metaSubdivisions').updateOne({distinctiveIndex: id}, {
                         $set: sub
                     })
-                    log(`${subName} Modified!`)
+                    log(`${subName} Modified! ${i}`)
                     modifiedSubs.push(id)
                 }
             } else {
