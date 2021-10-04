@@ -3,8 +3,10 @@ const settings = require("../settings");
 const log = require("../utils/log");
 const hash = require('object-hash');
 const PrepareWords = require("PrepareWords");
+const makeDate = require('../utils/makeDate')
+const cleanObj = require('../utils/cleanObj')
 
-const workDirectory = '../JSON/users/'
+const workDirectory = settings.workDirectory
 
 module.exports = async function (fileName) {
     try {
@@ -51,11 +53,17 @@ module.exports = async function (fileName) {
                 const user = await mdb.collection('metaUsers').findOne({
                     guid: usersForMongo[i]
                 })
+
+                // В реквесте мальца кривые данные, поправим их
+                cleanObj(user.hierarchy)
+
+                // У человека может быть работа по совместительству, поправим и ее
+                user.partTimeHierarchy && cleanObj(user.partTimeHierarchy)
+
+
                 /*
                     ! Здесь НЕ создаём следующие объекты и массивы:
                     ! rights {}
-                    ! editBound []
-                    ! viewBound []
 
                     * Такая история: в старом импорте существует поле _IDRRef,
                     * и с учетом этого поля уже выстроен сервис авторизации,
@@ -63,17 +71,11 @@ module.exports = async function (fileName) {
                     * Немного справки(но это не точно): _IDRRef - бинарник,
                     * который создаётся в 1С - является уникальным id для любых объектов.
                  */
-                 /* TODO:
-                        Собирать - hierarchy.
-                        Мэйби, чтобы данные не становились пустышками юзать ...prev ?
-                        Даты === даты, а не строки!!!
-                        stateStartDate пустые строки сделать null
-                        stateExpirationDate пустые строки сделать null
-                 */
+
                 const newInfo = {
                     _id: user._id,
                     _IDRRef: user.guid,
-                    disableDate: user.fired_date,
+                    disableDate: user.fired_date ? makeDate(user.fired_date) : null,
                     displayName: user.lastName + ' ' + user.firstName + ' ' + user.secondName,
                     dolgnost: user.position,
                     fam: user.lastName,
@@ -83,32 +85,38 @@ module.exports = async function (fileName) {
                     mailConst: [],
                     ot: user.secondName,
                     tags: [],
-                    birthday: user.birthdate,
+                    birthday: user.birthdate ? makeDate(user.birthdate) : null,
                     telephoneNumberAnother: [],
                     telephoneNumberMobile: [],
                     words: [],
                     mail: [],
                     telephoneNumber: [],
-                    dolgnostLast: null,
+                    dolgnostLast: null, // вероятно когда то это можно использовать ...
                     status: user.state,
                     tabNumber: user.tabNumber,
-                    employmentDate: user.employmentDate,
-                    statusStartDate: user.stateStartDate,
-                    stateEndDate: user.stateExpirationDate
+                    employmentDate: user.employmentDate ? makeDate(user.employmentDate) : null,
+                    statusStartDate: user.stateStartDate ? makeDate(user.stateStartDate) : null,
+                    statusEndDate: user.stateExpirationDate ? makeDate(user.stateExpirationDate) : null,
+                    partTimeHierarchy: user.partTimeHierarchy,
                 }
 
-                const pWords=new PrepareWords(newInfo.words)
+                const pWords = new PrepareWords(newInfo.words)
 
                 if (user.email) {
                     newInfo.mailConst.push(user.email)
-                    newInfo.mail.push(user.email)
                     pWords.fromString(user.email)
                 }
                 if (user.phoneNumber) {
-                    // Отредактировать регулярками на трубку
-                    newInfo.telephoneNumberMobile.push(user.phoneNumber)
-                    pWords.fromString(user.phoneNumber)
+                    if (user.phoneNumber.length === 12 && /^\+79/.test(user.phoneNumber)) {
+                        newInfo.telephoneNumberMobile.indexOf(user.phoneNumber) === -1 &&
+                        newInfo.telephoneNumberMobile.push(user.phoneNumber)
+                        pWords.fromString(user.phoneNumber)
+                    } else {
+                        newInfo.telephoneNumberAnother.push(user.phoneNumber)
+                        pWords.fromString(user.phoneNumber)
+                    }
                 }
+
                 pWords.fromString(newInfo.displayName)
                     .fromString(newInfo.dolgnost)
                     .fromString(newInfo.status)
@@ -121,7 +129,31 @@ module.exports = async function (fileName) {
                     newInfo.tags.push(structEl.caption)
                 })
 
-                const userInMongo = await mdbClient.db('Auth').collection('users').updateOne({
+                newInfo.partTimeHierarchy && newInfo.partTimeHierarchy.forEach((structEl) => {
+                    pWords.fromString(structEl.caption)
+                    newInfo.tags.push(structEl.caption)
+                })
+
+                // В старом импорте таким образом выстраивали область записи и чтения, трогать не будем
+                const ar = newInfo.hierarchy.concat([])
+                newInfo.editBound = []
+                newInfo.viewBound = []
+                while (ar.length) {
+                    const structItem = ar.pop()
+                    newInfo.editBound.length < 2 && newInfo.editBound.push(structItem._id)
+                    newInfo.viewBound.push(structItem._id)
+                }
+                // Если есть работа по совместительству, добавим ее в область чтения и записи по тому же принцепу
+                if (newInfo.partTimeHierarchy) {
+                    const ar = newInfo.partTimeHierarchy.concat([])
+                    while (ar.length) {
+                        const structItem = ar.pop()
+                        newInfo.editBound.length < 4 && newInfo.editBound.push(structItem._id)
+                        newInfo.viewBound.push(structItem._id)
+                    }
+                }
+
+                await mdbClient.db('Auth').collection('users').updateOne({
                     _id: user._id
                 }, {
                     $set: newInfo
@@ -129,6 +161,7 @@ module.exports = async function (fileName) {
                     upsert: true
                 })
             }
+        log('Users Service result: successfully!')
         }
     } catch (e) {
         log(`UsersService ERROR: ${e}`)

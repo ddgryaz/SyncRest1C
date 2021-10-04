@@ -23,6 +23,7 @@
     "express-fileupload": "^1.2.1",
     "moment": "^2.29.1",
     "object-hash": "^2.2.0",
+    "swagger-jsdoc": "^6.1.0",
     "swagger-ui-express": "^4.1.6"
   }
 }

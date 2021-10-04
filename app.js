@@ -5,20 +5,22 @@ const router = require('./routes/index')
 const MinimalMongodb = require('MinimalMongodb')
 const settings = require("./settings");
 const dbConnector = new MinimalMongodb(settings.dbSettings)
-const swaggerUi = require('swagger-ui-express'),
-    swaggerDocument = require('./swagger.json')
+const swaggerJSDoc = require('swagger-jsdoc')
+const swaggerUi = require('swagger-ui-express')
 const fileUpload = require('express-fileupload')
 const log = require("./utils/log");
+swaggerOptions = require('./swaggerObj')
 
 const PORT = settings.port || 5267
 const HOST = settings.host || '127.0.0.1'
+const swaggerDocs = swaggerJSDoc(swaggerOptions)
 
 const app = express()
 app.use(cors())
 app.use(express.json())
 app.use(fileUpload({}))
 app.use('/api', router)
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs))
 app.use(errorHandler)
 
 const start = async () => {

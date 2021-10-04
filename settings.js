@@ -17,7 +17,10 @@ exports = module.exports = {
     },
     port: process.env.PORT,
     host: process.env.HOST,
+    timeLock: process.env.TIMELOCK,
+    workDirectory: '../JSON/data/',
     prefixUsers: 'U',
     prefixReplacements: 'R',
-    prefixSubdivisions: 'S'
+    prefixSubdivisions: 'S',
+    prefixSubsidiary: process.env.PREFIXSUBSIDIARY
 }
