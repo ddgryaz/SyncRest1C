@@ -3,7 +3,7 @@ const router = new Router
 const dataController = require('../controllers/dataController')
 const IPAllowedMiddleware = require('../middleware/IPAllowedMiddleware')
 const TimeLockersMiddleware = require('../middleware/TimeLockersMiddleware')
-const validateReqMiddleware = require('../middleware/validateReqMiddleware')
+const {validateReqMiddleware} = require('../middleware/validateReqMiddleware')
 
 /**
  * @swagger

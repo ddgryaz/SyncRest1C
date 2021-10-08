@@ -4,7 +4,7 @@ const getFileExt = (string) => {
     return string.split('.').pop()
 }
 
-module.exports = async function (req, res, next) {
+async function validateReqMiddleware (req, res, next) {
     try {
         const data = req.files
         const withoutSymbolLength = Object.keys(data)
@@ -27,4 +27,4 @@ module.exports = async function (req, res, next) {
     }
 }
 
-module.exports = {getFileExt}
+module.exports = {getFileExt, validateReqMiddleware}
