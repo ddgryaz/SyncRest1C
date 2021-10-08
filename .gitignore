@@ -7,3 +7,4 @@ mockR.json
 mockS.json
 /JSON/data/*.json
 /scripts/forTests.js
+coverage

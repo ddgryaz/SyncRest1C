@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
+    "test": "jest",
     "dev": "nodemon app.js",
     "idx": "node scripts/makeIndex.js",
     "prune": "npm prune --production"
@@ -12,7 +13,8 @@
   "author": "Dmitriy Dzyuman, ATMRussia",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^2.0.12"
+    "nodemon": "^2.0.12",
+    "jest": "^27.2.4"
   },
   "dependencies": {
     "MinimalMongodb": "git+https://git.ans.aero/Libs/MinimalMongodb.git",

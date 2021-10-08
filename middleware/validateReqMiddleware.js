@@ -26,3 +26,5 @@ module.exports = async function (req, res, next) {
         res.status(400).json({message: 'Bad Request'})
     }
 }
+
+module.exports = {getFileExt}
