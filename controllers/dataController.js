@@ -6,6 +6,8 @@ const log = require('../utils/log')
 const syncDataService = require('../service/syncDataService')
 const settings = require("../settings");
 
+const fgGreen = '\x1b[32m%s\x1b[0m'
+
 class DataController {
     async syncDataFrom1CWithMongo(req, res, next) {
         try {
@@ -30,7 +32,7 @@ class DataController {
              */
             syncDataService(fileName).then(() => {
                 log('syncDataService worked successfully!')
-                log('The import is complete. Expecting the next request')
+                console.log(fgGreen, moment(new Date()).format('YYYY-MM-DD hh:mm a') + ' - ' + 'The import is complete. Expecting the next request')
             }, (reason => log(`SYNCDATASERVICE ERROR: ${reason}`)))
             return res.json(`Upload is success`)
         } catch (e) {

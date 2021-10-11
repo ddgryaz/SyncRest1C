@@ -41,7 +41,7 @@ module.exports = async function (fileName) {
             }
         }
         if (replacementsForMongo.length === 0) {
-            log(`No changes. Nothing to update`)
+            log(`ReplacementsService No changes. Nothing to update`)
         }
         log('Replacements Service result: successfully!')
     } catch (e) {

@@ -50,7 +50,7 @@ module.exports = async function (fileName) {
             }
         }
         if (modifiedSubs.length === 0) {
-            log(`No changes. Nothing to update`)
+            log(`SubdivisionsService No changes. Nothing to update`)
         } else {
             log(`Synchronizing ${modifiedSubs.length} subdivisions with Mongo...`)
             for (let i = 0; modifiedSubs[i]; i++) {
@@ -81,7 +81,7 @@ module.exports = async function (fileName) {
                     upsert: true
                 })
             }
-            log('Subdivisions Service result: successfully!')
+        log('Subdivisions Service result: successfully!')
         }
     } catch (e) {
         log(`SubdivisionsService ERROR: ${e}`)

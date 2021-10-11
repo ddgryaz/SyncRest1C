@@ -40,12 +40,23 @@ module.exports = async function (fileName) {
                     upsert: true
                 })
                 log(`${username} Added!`)
-                usersForMongo.push(guid)
-                newUsers = true
+                /*
+                    * Если вдруг коллекцию мета удалили руками, проверим данные, чтобы не дублировать
+                    * в основную коллекцию Auth
+                 */
+                const checkUser = await mdbClient.db('Auth').collection('users').findOne({
+                    _IDRRef: user.guid
+                })
+                if (checkUser) {
+                    log('User already exists in the Auth collection')
+                } else {
+                    usersForMongo.push(guid)
+                    newUsers = true
+                }
             }
         }
         if (!wasChanges && !newUsers) {
-            log(`No changes. Nothing to update`)
+            log(`UsersService No changes. Nothing to update`)
         }
         if (wasChanges || newUsers) {
             log(`Synchronizing ${usersForMongo.length} users with Mongo...`)
@@ -161,7 +172,7 @@ module.exports = async function (fileName) {
                 }
 
                 await mdbClient.db('Auth').collection('users').updateOne({
-                    _id: user._id
+                    _IDRRef: user.guid
                 }, {
                     $set: newInfo
                 }, {

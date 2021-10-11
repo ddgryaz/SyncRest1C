@@ -2,16 +2,16 @@ const MinimalMongodb = require('MinimalMongodb')
 const settings = require("../settings");
 const log = require("../utils/log");
 
-const timeLock = settings.timeLock || (60 * 2)//(60 * 60 * 2) // 2h
+const timeLock = settings.timeLock || (60 * 60) // 1h
 
-/*
-TODO: Коллекции meta 3 штуки надо индексить
- */
 
 async function start () {
     log(`Timelock is set to ${timeLock} seconds`)
     const dbConnector = new MinimalMongodb(settings.dbSettings)
     const mdb = await dbConnector.connect()
+    await mdb.collection('metaReplacements').createIndex({ 'docGuid': 1 })
+    await mdb.collection('metaSubdivisions').createIndex({ 'subunitGuid': 1 })
+    await mdb.collection('metaUsers').createIndex({ 'guid': 1 })
     await mdb.collection('allowIps').createIndex({ 'ip': 1 })
     await mdb.collection('timeLockers').createIndex({ 'createdAt': 1 }, { expireAfterSeconds: timeLock })
     await dbConnector.client.close()
