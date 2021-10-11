@@ -21,6 +21,5 @@ exports = module.exports = {
     workDirectory: '../JSON/data/',
     prefixUsers: 'U',
     prefixReplacements: 'R',
-    prefixSubdivisions: 'S',
-    prefixSubsidiary: process.env.PREFIXSUBSIDIARY
+    prefixSubdivisions: 'S'
 }

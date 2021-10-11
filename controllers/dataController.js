@@ -13,23 +13,24 @@ class DataController {
                 * Установим таймлокер, чтобы
                 * в ближайшее время на этот эндпоинт не могли стучать
              */
-            // await mdb.collection('timeLockers').insertOne({
-            //     createdAt: new Date(),
-            //     endpoint: 'dataFrom1C'
-            // })
+            await mdb.collection('timeLockers').insertOne({
+                createdAt: new Date(),
+                endpoint: 'dataFrom1C'
+            })
             const {users} = req.files
             const {subdivisions} = req.files
             const {replacements} = req.files
             let fileName = moment(new Date()).format('YYMMDDhhmmss')
             await users.mv(path.resolve(__dirname, '..', 'JSON', 'data', settings.prefixUsers + fileName+ '.json'))
-            // await subdivisions.mv(path.resolve(__dirname, '..', 'JSON', 'data', settings.prefixSubdivisions + fileName+ '.json'))
-            // await replacements.mv(path.resolve(__dirname, '..', 'JSON', 'data', settings.prefixReplacements + fileName+ '.json'))
+            await subdivisions.mv(path.resolve(__dirname, '..', 'JSON', 'data', settings.prefixSubdivisions + fileName+ '.json'))
+            await replacements.mv(path.resolve(__dirname, '..', 'JSON', 'data', settings.prefixReplacements + fileName+ '.json'))
             log('JSONs data loaded successfully. Transfer to the service')
             /*
                 ! Вызовем сервис. Ждать не будем, вернем респонс
              */
             syncDataService(fileName).then(() => {
                 log('syncDataService worked successfully!')
+                log('The import is complete. Expecting the next request')
             }, (reason => log(`SYNCDATASERVICE ERROR: ${reason}`)))
             return res.json(`Upload is success`)
         } catch (e) {

@@ -14,10 +14,9 @@ module.exports = async function (fileName) {
     try {
         const file = require(`${workDirectory}` + settings.prefixSubdivisions + `${fileName}` + '.json')
         const modifiedSubs = []
-        console.log(file.length)
         for (let i = 0; file[i]; i++) {
             const sub = file[i]
-            const id = file[i].distinctiveIndex
+            const id = file[i].subunitGuid
             const subName = file[i].prettyName
             /*
             * В тюменском филиале, в данных есть дубли. В 1С хранятся не актуальные данные
@@ -27,21 +26,21 @@ module.exports = async function (fileName) {
                 continue
             }
             const metaSubunit = await mdb.collection('metaSubdivisions').findOne({
-                distinctiveIndex: id
+                subunitGuid: id
             })
             if (metaSubunit) {
                 const compareSub = (hash(sub) === metaSubunit.hash)
                 if (!compareSub) {
                     sub.hash = hash(sub)
-                    await mdb.collection('metaSubdivisions').updateOne({distinctiveIndex: id}, {
+                    await mdb.collection('metaSubdivisions').updateOne({subunitGuid: id}, {
                         $set: sub
                     })
-                    log(`${subName} Modified! ${i}`)
+                    log(`${subName} Modified!`)
                     modifiedSubs.push(id)
                 }
             } else {
                 sub.hash = hash(sub)
-                await mdb.collection('metaSubdivisions').updateOne({distinctiveIndex: id}, {
+                await mdb.collection('metaSubdivisions').updateOne({subunitGuid: id}, {
                     $set: sub
                 }, {
                     upsert: true
@@ -56,19 +55,19 @@ module.exports = async function (fileName) {
             log(`Synchronizing ${modifiedSubs.length} subdivisions with Mongo...`)
             for (let i = 0; modifiedSubs[i]; i++) {
                 const sub = await mdb.collection('metaSubdivisions').findOne({
-                    distinctiveIndex: modifiedSubs[i]
+                    subunitGuid: modifiedSubs[i]
                 })
 
                 const newInfo = {
-                    _id: settings.prefixSubsidiary + sub.distinctiveIndex,
-                    activePeople: await getActivePeoples(settings.prefixSubsidiary + sub.distinctiveIndex),
+                    _id: sub.subunitGuid,
+                    activePeople: await getActivePeoples(sub.subunitGuid),
                     guid: sub.subunitGuid,
                     guidParent: sub.parentGuid,
                     caption: sub.prettyName,
                     shortName: sub.subunit,
-                    dismissedPeoples: await getDismissedPeoples(settings.prefixSubsidiary + sub.distinctiveIndex),
+                    dismissedPeoples: await getDismissedPeoples(sub.subunitGuid),
                     level: sub.level,
-                    parent: sub.parentDistinctiveIndex ? settings.prefixSubsidiary + sub.parentDistinctiveIndex : null,
+                    parent: sub.parentGuid ? sub.parentGuid : null,
                     peoplePosition: sub.peoplePosition
                 }
                 if (newInfo.peoplePosition === false) {

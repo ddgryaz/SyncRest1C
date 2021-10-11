@@ -1,6 +1,7 @@
 const userService = require('./usersService')
 const subdivisionsService = require('./subdivisionsService')
 const replacementsService = require('./replacementsService')
+const log = require('../utils/log')
 
 module.exports = async function (fileName) {
     /*
@@ -8,6 +9,6 @@ module.exports = async function (fileName) {
     ! активных людей
      */
     await userService(fileName)
-    // await subdivisionsService(fileName)
-    // await replacementsService(fileName)
+    await subdivisionsService(fileName)
+    await replacementsService(fileName)
 }
