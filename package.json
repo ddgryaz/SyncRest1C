@@ -5,6 +5,8 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
+    "add": "node scripts/ip.js add",
+    "delete": "node scripts/ip.js delete",
     "test": "jest",
     "dev": "nodemon app.js",
     "idx": "node scripts/makeIndex.js",
