@@ -21,5 +21,6 @@ exports = module.exports = {
     workDirectory: '../JSON/data/',
     prefixUsers: 'U',
     prefixReplacements: 'R',
-    prefixSubdivisions: 'S'
+    prefixSubdivisions: 'S',
+    cleaner: process.env.CLEAN_STORAGE_DAY
 }

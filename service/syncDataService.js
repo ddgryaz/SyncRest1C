@@ -1,7 +1,7 @@
 const userService = require('./usersService')
 const subdivisionsService = require('./subdivisionsService')
 const replacementsService = require('./replacementsService')
-const log = require('../utils/log')
+const storageCleaner = require('../utils/storageCleaner')
 
 module.exports = async function (fileName) {
     /*
@@ -11,4 +11,5 @@ module.exports = async function (fileName) {
     await userService(fileName)
     await subdivisionsService(fileName)
     await replacementsService(fileName)
+    storageCleaner()
 }
