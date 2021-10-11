@@ -55,10 +55,16 @@ module.exports = async function (fileName) {
                 })
 
                 // В реквесте мальца кривые данные, поправим их
-                cleanObj(user.hierarchy)
+                cleanObj(user.currentHierarchy)
+
+                user.hierarchyHistory && user.hierarchyHistory.forEach((structEl) => {
+                    structEl.startDate = makeDate(structEl.startDate)
+                    structEl.endDate = makeDate(structEl.endDate)
+                    cleanObj(structEl.hierarchy)
+                })
 
                 // У человека может быть работа по совместительству, поправим и ее
-                user.partTimeHierarchy && cleanObj(user.partTimeHierarchy)
+                user.currentPartTimeHierarchy && cleanObj(user.currentPartTimeHierarchy)
 
 
                 /*
@@ -79,13 +85,14 @@ module.exports = async function (fileName) {
                     displayName: user.lastName + ' ' + user.firstName + ' ' + user.secondName,
                     dolgnost: user.position,
                     fam: user.lastName,
-                    hierarchy: user.hierarchy,
+                    hierarchy: user.currentHierarchy,
+                    hierarchyHistory: user.hierarchyHistory,
                     ids: [user._id],
                     im: user.firstName,
                     mailConst: [],
                     ot: user.secondName,
                     tags: [],
-                    birthday: user.birthdate ? makeDate(user.birthdate) : null,
+                    birthday: user.birthDate ? makeDate(user.birthDate) : null,
                     telephoneNumberAnother: [],
                     telephoneNumberMobile: [],
                     words: [],
@@ -97,7 +104,7 @@ module.exports = async function (fileName) {
                     employmentDate: user.employmentDate ? makeDate(user.employmentDate) : null,
                     statusStartDate: user.stateStartDate ? makeDate(user.stateStartDate) : null,
                     statusEndDate: user.stateExpirationDate ? makeDate(user.stateExpirationDate) : null,
-                    partTimeHierarchy: user.partTimeHierarchy,
+                    partTimeHierarchy: user.currentPartTimeHierarchy,
                 }
 
                 const pWords = new PrepareWords(newInfo.words)

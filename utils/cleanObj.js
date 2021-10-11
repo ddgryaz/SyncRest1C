@@ -7,13 +7,13 @@ function cleanObj (obj) {
     // id сделаем в _id и уберем peoplePosition везде кроме самого нижнего уровня
     for (let i = 0; obj[i]; i++) {
         if (i !== endPosition) {
-            obj[i]._id = settings.prefixSubsidiary + obj[i].distinctiveIndex
-            obj[i].parent = obj[i].parentDistinctiveIndex ? settings.prefixSubsidiary + obj[i].parentDistinctiveIndex : null
+            obj[i]._id = obj[i].id
+            obj[i].parent = obj[i].parent ? obj[i].parent : null
             delete obj[i].id
             delete obj[i].peoplePosition
         } else {
-            obj[i]._id = settings.prefixSubsidiary + obj[i].distinctiveIndex
-            obj[i].parent = obj[i].parentDistinctiveIndex ? settings.prefixSubsidiary + obj[i].parentDistinctiveIndex : null
+            obj[i]._id = obj[i].id
+            obj[i].parent = obj[i].parent ? obj[i].parent : null
             delete obj[i].id
             break
         }
