@@ -46,7 +46,14 @@ module.exports = async function (fileName) {
                     upsert: true
                 })
                 log(`${subName} Added!`)
-                modifiedSubs.push(id)
+                const checkSub = await mdbClient.db('Auth').collection('structure').findOne({
+                    _id: id
+                })
+                if (checkSub) {
+                    log('Subdivision already exists in the Auth collection')
+                } else {
+                    modifiedSubs.push(id)
+                }
             }
         }
         if (modifiedSubs.length === 0) {

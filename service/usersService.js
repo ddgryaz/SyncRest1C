@@ -161,7 +161,7 @@ module.exports = async function (fileName) {
                     newInfo.editBound.length < 2 && newInfo.editBound.push(structItem._id)
                     newInfo.viewBound.push(structItem._id)
                 }
-                // Если есть работа по совместительству, добавим ее в область чтения и записи по тому же принцепу
+                // Если есть работа по совместительству, добавим ее в область чтения и записи по тому же принципу
                 if (newInfo.partTimeHierarchy) {
                     const ar = newInfo.partTimeHierarchy.concat([])
                     while (ar.length) {
