@@ -48,7 +48,7 @@ const {validateReqMiddleware} = require('../middleware/validateReqMiddleware')
 router.post('/postData',
     IPAllowedMiddleware,
     validateReqMiddleware,
-    // TimeLockersMiddleware('dataFrom1C'),
+    TimeLockersMiddleware('dataFrom1C'),
     dataController.syncDataFrom1CWithMongo
 )
 module.exports = router
