@@ -63,7 +63,7 @@ db.createRole({
 
 use SyncRest1C
 db.updateUser("ans1",{
-    roles:[{role:'SyncRestAppRole',db:'Auth'}]
+    roles:[{role:'SyncRestAppRole',db:'admin'}]
 })
 ```
 
