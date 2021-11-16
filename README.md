@@ -27,33 +27,48 @@ Swagger - документация по статус кодам доступна
 
 `TIMELOCK` - Время в секундах, для блокировки последующих запросов. (По умолчанию - 3600). Устанавливается один раз, во время запуска - `npm run idx`
 
+### Docker:
+
+Докер контейнер по умолчанию поднимается на 5000 порту (см. Dockerfile).
+
+Для удобства использования, написан Makefile - все основные команды управления контейнером.
+
 ### Создание кастомных ролей в MongoDB:
 
-На примере кастомных ролей сервиса fail2ban:
+Для доступа в базу Auth из сервиса SyncRest1C:
+
 ```javascript
 use admin
 db.createRole({
-  role: "AuthAppRole",
+  role: "SyncRestAppRole",
   privileges: [
     {
-      resource: { db: "fail2ban", collection: "ban" },
-      actions: [ "insert" ]
+      resource: { db: "Auth", collection: "users" },
+      actions: [ "insert", "find" ]
     }
   ],
   roles: [
-    { role: "readWrite", db: "Auth" },
-    { role: "dbAdmin", db: "Auth" }
+    { role: "readWrite", db: "SyncRest1C" },
+    { role: "dbAdmin", db: "SyncRest1C" }
   ]
 })
 ```
 
-role stored in admin database
+Роль хранится в БД Admin
 
 ### Изменение роли у пользователя в MongoDB:
-user stored in Auth database
+
+Пользователь хранится в БД SyncRest1C
 ```javascript
-use Auth
+
+use SyncRest1C
 db.updateUser("ans1",{
-    roles:[{role:'AuthAppRole',db:'admin'}]
+    roles:[{role:'SyncRestAppRole',db:'Auth'}]
 })
 ```
+
+### Более подробно об кастомных ролях:
+
+1. Предоставляет дополнительные привилегии определяемой пользователем роли. [docs.mongodb.com](https://docs.mongodb.com/manual/reference/method/db.revokePrivilegesFromRole/).
+
+2. Удаляет указанные привилегии из определяемой пользователем роли в базе данных, в которой выполняется метод. [docs.mongodb.com](https://docs.mongodb.com/manual/reference/method/db.grantPrivilegesToRole/).

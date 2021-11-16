@@ -67,12 +67,12 @@ module.exports = async function (fileName) {
 
                 const newInfo = {
                     _id: sub.subunitGuid,
-                    activePeople: await getActivePeoples(sub.subunitGuid),
+                    activePeople: await getActivePeoples(sub.subunitGuid) || 0,
                     guid: sub.subunitGuid,
                     guidParent: sub.parentGuid,
                     caption: sub.prettyName,
                     shortName: sub.subunit,
-                    dismissedPeoples: await getDismissedPeoples(sub.subunitGuid),
+                    dismissedPeoples: await getDismissedPeoples(sub.subunitGuid) || 0,
                     level: sub.level,
                     parent: sub.parentGuid ? sub.parentGuid : null,
                     peoplePosition: sub.peoplePosition

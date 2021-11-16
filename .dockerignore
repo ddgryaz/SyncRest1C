@@ -1,0 +1,8 @@
+node_modules
+Dockerfile
+.git
+.idea
+package-lock.json
+.env.example
+scripts/forTests.js
+mock*.json
