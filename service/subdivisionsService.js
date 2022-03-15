@@ -1,7 +1,7 @@
 /* global mdb, mdbClient */
-const settings = require("../settings");
-const log = require("../utils/log");
-const hash = require('object-hash');
+const settings = require("../settings")
+const cLogs = require('clogsjs')
+const hash = require('object-hash')
 const getActivePeoples = require('../utils/getActivePeoples')
 const getDismissedPeoples = require('../utils/getDismissedPeoples')
 const findStringInObject = require('../utils/findStringInObject')
@@ -35,7 +35,7 @@ module.exports = async function (fileName) {
                     await mdb.collection('metaSubdivisions').updateOne({subunitGuid: id}, {
                         $set: sub
                     })
-                    log(`${subName} Modified!`)
+                    cLogs(`${subName} Modified!`)
                     modifiedSubs.push(id)
                 }
             } else {
@@ -45,21 +45,21 @@ module.exports = async function (fileName) {
                 }, {
                     upsert: true
                 })
-                log(`${subName} Added!`)
+                cLogs(`${subName} Added!`)
                 const checkSub = await mdbClient.db('Auth').collection('structure').findOne({
                     _id: id
                 })
                 if (checkSub) {
-                    log('Subdivision already exists in the Auth collection')
+                    cLogs('Subdivision already exists in the Auth collection', 'yellow')
                 } else {
                     modifiedSubs.push(id)
                 }
             }
         }
         if (modifiedSubs.length === 0) {
-            log(`SubdivisionsService No changes. Nothing to update`)
+            cLogs(`SubdivisionsService No changes. Nothing to update`, 'yellow')
         } else {
-            log(`Synchronizing ${modifiedSubs.length} subdivisions with Mongo...`)
+            cLogs(`Synchronizing ${modifiedSubs.length} subdivisions with Mongo...`, 'green')
             for (let i = 0; modifiedSubs[i]; i++) {
                 const sub = await mdb.collection('metaSubdivisions').findOne({
                     subunitGuid: modifiedSubs[i]
@@ -88,9 +88,9 @@ module.exports = async function (fileName) {
                     upsert: true
                 })
             }
-        log('Subdivisions Service result: successfully!')
+        cLogs('Subdivisions Service result: successfully!', 'green')
         }
-    } catch (e) {
-        log(`SubdivisionsService ERROR: ${e}`)
+    } catch (err) {
+        cLogs(`SubdivisionsService ERROR: ` + err.toString(), 'red')
     }
 }

@@ -1,5 +1,6 @@
 const settings = require('../settings.js')
 const MinimalMongodb = require('MinimalMongodb')
+const cLogs = require('clogsjs')
 
 
 async function start() {
@@ -8,19 +9,19 @@ async function start() {
     const cmd = process.argv[2]
     const ip = process.argv[3] || '127.0.0.1'
     if (cmd === 'add') {
-        console.log('add', ip)
+        cLogs('ADD: ' + ip, 'green')
         await mdb.collection('allowIps').insertOne({
             ip: ip,
         })
     } else if (cmd === 'delete') {
-        console.log('delete', ip)
+        cLogs('DELETE: ' + ip, 'green')
         await mdb.collection('allowIps').deleteOne({
             ip: ip,
         })
     }
     await dbConnector.client.close()
 }start().then(() => {
-    console.log('Finish')
+    cLogs('Finish', 'green')
 }).catch((err) => {
-    console.log('Error', err)
+    cLogs('Error: ' + err.toString(), 'red')
 })

@@ -1,4 +1,4 @@
-const log = require("../utils/log");
+const cLogs = require('clogsjs')
 
 const getFileExt = (string) => {
     return string.split('.').pop()
@@ -9,16 +9,16 @@ async function validateReqMiddleware (req, res, next) {
         const data = req.files
         const withoutSymbolLength = Object.keys(data)
         if (!data.users || !data.subdivisions || !data.replacements || withoutSymbolLength.length !== 3) {
-            log('Data not validated. Cancel request')
+            cLogs('Data not validated. Cancel request', 'yellow')
             res.status(415).json({message: 'Expected 3 files: users, subdivisions, replacements.'})
         } else {
             if (getFileExt(data.users.name).toLowerCase() !== 'json'
                 || getFileExt(data.subdivisions.name).toLowerCase() !== 'json'
                 || getFileExt(data.replacements.name).toLowerCase() !== 'json') {
-                log('Middleware failed to validate json. Cancel request')
+                cLogs('Middleware failed to validate json. Cancel request', 'yellow')
                 res.status(415).json({message: 'Json files is expected on input'})
             } else {
-                log('Data valid success')
+                cLogs('Data valid success', 'green')
                 next()
             }
         }

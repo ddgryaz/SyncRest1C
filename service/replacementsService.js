@@ -1,7 +1,7 @@
 /* global mdb, mdbClient */
-const settings = require("../settings");
-const log = require("../utils/log");
-const hash = require('object-hash');
+const settings = require("../settings")
+const cLogs = require('clogsjs')
+const hash = require('object-hash')
 /*
 TODO: сервис работает как заглушка, на текущий момент не понятно, что делать с данными.
     Пока будем просто хранить их в мета-коллекции.
@@ -26,7 +26,7 @@ module.exports = async function (fileName) {
                     await mdb.collection('metaReplacements').updateOne({docGuid: guid}, {
                         $set: replace
                     })
-                    log(`${rep} Modified!`)
+                    cLogs(`${rep} Modified!`)
                     replacementsForMongo.push(guid)
                 }
             } else {
@@ -36,15 +36,15 @@ module.exports = async function (fileName) {
                 }, {
                     upsert: true
                 })
-                log(`${rep} Added!`)
+                cLogs(`${rep} Added!`)
                 replacementsForMongo.push(guid)
             }
         }
         if (replacementsForMongo.length === 0) {
-            log(`ReplacementsService No changes. Nothing to update`)
+            cLogs(`ReplacementsService No changes. Nothing to update`, 'yellow')
         }
-        log('Replacements Service result: successfully!')
-    } catch (e) {
-        log(`Replacements Service ERROR: ${e}`)
+        cLogs('Replacements Service result: successfully!', 'green')
+    } catch (err) {
+        cLogs(`Replacements Service ERROR: ` + err.toString(), 'red')
     }
 }

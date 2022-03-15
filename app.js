@@ -3,12 +3,12 @@ const cors = require('cors')
 const errorHandler = require('./middleware/ErrorHandlingMiddleware')
 const router = require('./routes/index')
 const MinimalMongodb = require('MinimalMongodb')
-const settings = require("./settings");
+const settings = require("./settings")
 const dbConnector = new MinimalMongodb(settings.dbSettings)
 const swaggerJSDoc = require('swagger-jsdoc')
 const swaggerUi = require('swagger-ui-express')
 const fileUpload = require('express-fileupload')
-const log = require("./utils/log");
+const cLogs = require('clogsjs')
 swaggerOptions = require('./swaggerObj')
 
 const PORT = settings.port || 5267
@@ -27,9 +27,9 @@ const start = async () => {
     try {
         global.mdb = await dbConnector.connect()
         global.mdbClient = dbConnector.client
-        app.listen(PORT, HOST, () => log(`APP STARTED ON ${HOST}:${PORT}`))
-    } catch (e) {
-        log('ERROR START APP ' + e)
+        app.listen(PORT, HOST, () => cLogs(`APP STARTED ON ${HOST}:${PORT}`, 'green'))
+    } catch (err) {
+        cLogs('ERROR START APP ' + err.toString(), 'red')
     }
 }
 

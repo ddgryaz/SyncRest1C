@@ -1,27 +1,27 @@
 const MinimalMongodb = require('MinimalMongodb')
 const settings = require("../settings");
-const log = require("../utils/log");
+const cLogs = require('clogsjs')
 
 const timeLock = settings.timeLock || (60 * 60) // 1h
 
 
 async function start () {
-    log(`Timelock is set to ${timeLock} seconds`)
     const dbConnector = new MinimalMongodb(settings.dbSettings)
     const mdb = await dbConnector.connect()
     await mdb.collection('metaReplacements').createIndex({ 'docGuid': 1 })
     await mdb.collection('metaSubdivisions').createIndex({ 'subunitGuid': 1 })
     await mdb.collection('metaUsers').createIndex({ 'guid': 1 })
     await mdb.collection('allowIps').createIndex({ 'ip': 1 })
-    await mdb.collection('timeLockers').createIndex({ 'createdAt': 1 }, { expireAfterSeconds: timeLock })
+    await mdb.collection('timeLockers').createIndex({ 'createdAt': 1 }, { expireAfterSeconds: Number(timeLock) })
     await dbConnector.client.close()
+    cLogs(`Timelock is set to ${timeLock} seconds`, 'yellow')
 }
 
 
 start().then(() => {
-    log('FINISH! Indexes created!')
+    cLogs('FINISH! Indexes created!', 'green')
     process.exit(0)
 }).catch((err) => {
-    log('ERROR', err.toString())
+    cLogs('ERROR: ' + err.toString(), 'red')
     process.exit(1)
 })

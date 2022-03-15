@@ -1,8 +1,8 @@
 /* global mdb, mdbClient */
-const settings = require("../settings");
-const log = require("../utils/log");
-const hash = require('object-hash');
-const PrepareWords = require("PrepareWords");
+const settings = require("../settings")
+const cLogs = require('clogsjs')
+const hash = require('object-hash')
+const PrepareWords = require("PrepareWords")
 const makeDate = require('../utils/makeDate')
 const cleanObj = require('../utils/cleanObj')
 
@@ -28,7 +28,7 @@ module.exports = async function (fileName) {
                     await mdb.collection('metaUsers').updateOne({guid: guid}, {
                         $set: user
                     })
-                    log(`${username} Modified!`)
+                    cLogs(`${username} Modified!`)
                     usersForMongo.push(guid)
                     wasChanges = true
                 }
@@ -39,7 +39,7 @@ module.exports = async function (fileName) {
                 }, {
                     upsert: true
                 })
-                log(`${username} Added!`)
+                cLogs(`${username} Added!`)
                 /*
                     * Если вдруг коллекцию мета удалили руками, проверим данные, чтобы не дублировать
                     * в основную коллекцию Auth
@@ -48,7 +48,7 @@ module.exports = async function (fileName) {
                     _IDRRef: user.guid
                 })
                 if (checkUser) {
-                    log('User already exists in the Auth collection')
+                    cLogs('User already exists in the Auth collection', 'yellow')
                 } else {
                     usersForMongo.push(guid)
                     newUsers = true
@@ -56,10 +56,10 @@ module.exports = async function (fileName) {
             }
         }
         if (!wasChanges && !newUsers) {
-            log(`UsersService No changes. Nothing to update`)
+            cLogs(`UsersService No changes. Nothing to update`, 'yellow')
         }
         if (wasChanges || newUsers) {
-            log(`Synchronizing ${usersForMongo.length} users with Mongo...`)
+            cLogs(`Synchronizing ${usersForMongo.length} users with Mongo...`, 'green')
             for (let i = 0; usersForMongo[i]; i++) {
                 const user = await mdb.collection('metaUsers').findOne({
                     guid: usersForMongo[i]
@@ -179,10 +179,10 @@ module.exports = async function (fileName) {
                     upsert: true
                 })
             }
-        log('Users Service result: successfully!')
+        cLogs('Users Service result: successfully!', 'green')
         }
-    } catch (e) {
-        log(`UsersService ERROR: ${e}`)
+    } catch (err) {
+        cLogs(`UsersService ERROR: ` + err.toString(), 'red')
     }
 
 }

@@ -1,5 +1,3 @@
-const settings = require("../settings");
-
 function cleanObj (obj) {
     const endPosition = obj.length - 1
     // Уберем родителя у самого верхнего уровня

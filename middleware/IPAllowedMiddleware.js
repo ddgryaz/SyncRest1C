@@ -1,6 +1,6 @@
 /* global mdb */
 
-const log = require("../utils/log");
+const cLogs = require('clogsjs')
 module.exports = async function (req, res, next){
     try {
         const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress
@@ -8,10 +8,10 @@ module.exports = async function (req, res, next){
             ip: ip
         })
         if (!candidate) {
-            log(`Found post request. Candidate not found. Permission Denied. ${ip}`)
+            cLogs(`Found post request. Candidate not found. Permission Denied. ${ip}`, 'yellow')
             return res.status(403).json({message: 'Permission Denied'})
         }
-        log(`Found post request. Candidate confirmed, IP: ${ip}`)
+        cLogs(`Found post request. Candidate confirmed, IP: ${ip}`, 'green')
         next()
     } catch (e) {
         res.status(400).json({message: 'Bad Request'})

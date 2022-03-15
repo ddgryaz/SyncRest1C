@@ -1,6 +1,6 @@
 /* global mdb */
 
-const log = require("../utils/log");
+const cLogs = require('clogsjs')
 module.exports = function (endpointName) {
     return async function (req, res, next) {
         try {
@@ -8,10 +8,10 @@ module.exports = function (endpointName) {
                 endpoint: endpointName
             })
             if (endpoint) {
-                log('Timelocker detected. Cancel request')
+                cLogs('Timelocker detected. Cancel request', 'yellow')
                 return res.status(405).json({message: 'TimeLocker detected.'})
             }
-            log(`Timelocker not found. Accept the request`)
+            cLogs(`Timelocker not found. Accept the request`, 'green')
             next()
         } catch (e) {
             res.status(400).json({message: 'Bad Request'})

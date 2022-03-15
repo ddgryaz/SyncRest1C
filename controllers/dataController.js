@@ -2,11 +2,10 @@
 const ApiError = require('../error/ApiErorr')
 const moment = require("moment");
 const path = require("path");
-const log = require('../utils/log')
+const cLogs = require('clogsjs')
 const syncDataService = require('../service/syncDataService')
-const settings = require("../settings");
+const settings = require("../settings")
 
-const fgGreen = '\x1b[32m%s\x1b[0m'
 
 class DataController {
     async syncDataFrom1CWithMongo(req, res, next) {
@@ -26,18 +25,18 @@ class DataController {
             await users.mv(path.resolve(__dirname, '..', 'JSON', 'data', settings.prefixUsers + fileName+ '.json'))
             await subdivisions.mv(path.resolve(__dirname, '..', 'JSON', 'data', settings.prefixSubdivisions + fileName+ '.json'))
             await replacements.mv(path.resolve(__dirname, '..', 'JSON', 'data', settings.prefixReplacements + fileName+ '.json'))
-            log('JSONs data loaded successfully. Transfer to the service')
+            cLogs('JSONs data loaded successfully. Transfer to the service', 'green')
             /*
                 ! Вызовем сервис. Ждать не будем, вернем респонс
              */
             syncDataService(fileName).then(() => {
-                log('syncDataService worked successfully!')
-                console.log(fgGreen, moment(new Date()).format('YYYY-MM-DD hh:mm a') + ' - ' + 'The import is complete. Expecting the next request')
-            }, (reason => log(`SYNCDATASERVICE ERROR: ${reason}`)))
+                cLogs('syncDataService worked successfully!', 'green')
+                cLogs('The import is complete. Expecting the next request', 'green')
+            }, (reason => cLogs(`SYNCDATASERVICE ERROR: ${reason}`, 'red')))
             return res.json(`Upload is success`)
-        } catch (e) {
-            log(`syncDataFrom1CWithMongo ERROR: ${e}`)
-            next(ApiError.badRequest(e.message))
+        } catch (err) {
+            cLogs(`syncDataFrom1CWithMongo ERROR: ` + err.toString(), 'red')
+            next(ApiError.badRequest(err.message))
         }
     }
 }
